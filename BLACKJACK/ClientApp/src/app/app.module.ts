@@ -9,6 +9,12 @@ import { NavMenuComponent } from './nav-menu/nav-menu.component';
 import { HomeComponent } from './home/home.component';
 import { CounterComponent } from './counter/counter.component';
 import { FetchDataComponent } from './fetch-data/fetch-data.component';
+import { DeckComponent } from './deck/deck.component';
+import { DeckService } from './Services/deck.service';
+import { UserService } from './Services/user.services';
+import { LocalStorageService } from './Services/localstorage.services'
+import { DrawService } from './Services/draw.service';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -16,19 +22,22 @@ import { FetchDataComponent } from './fetch-data/fetch-data.component';
     NavMenuComponent,
     HomeComponent,
     CounterComponent,
-    FetchDataComponent
+    FetchDataComponent,
+    DeckComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
     HttpClientModule,
     FormsModule,
+    BrowserAnimationsModule,
     RouterModule.forRoot([
       { path: '', component: HomeComponent, pathMatch: 'full' },
       { path: 'counter', component: CounterComponent },
       { path: 'fetch-data', component: FetchDataComponent },
+      { path: 'deck', component:DeckComponent}
     ])
   ],
-  providers: [],
+  providers: [DeckService, UserService, LocalStorageService, DrawService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -1,0 +1,128 @@
+import { Component, Inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { DeckService } from '../Services/deck.service';
+import { UserService } from '../Services/user.services';
+import { LocalStorageService } from '../Services/localstorage.services';
+import { DrawService } from '../Services/draw.service';
+import { Deck } from '../interfaces/deck.interface';
+import { User } from '../interfaces/user.interface'
+import { Local } from 'protractor/built/driverProviders';
+import Swal from 'sweetalert2';
+import { trigger, transition, style, animate, query, stagger } from '@angular/animations';
+import { Draw } from '../interfaces/draw.interface';
+  
+@Component({
+  selector: 'app-deck',
+  templateUrl: './deck.component.html',
+  animations: [
+    trigger('listAnimation', [
+      transition('* => *', [ // each time the binding value changes
+        query(':leave', [
+          stagger(100, [
+            animate('0.5s', style({ opacity: 0 }))
+          ])
+        ], { optional: true }),
+        query(':enter', [
+          style({ opacity: 0 }),
+          stagger(100, [
+            animate('0.5s', style({ opacity: 1 }))
+          ])
+        ], { optional: true })
+      ])
+    ])
+  ],
+  styleUrls: ['./deck.component.css']
+})
+export class DeckComponent {
+  items = [];
+  public decks: Deck[]; 
+  public deck: Deck;
+  public showForm = false;
+  public showBoard = false;
+  public showMainForm = true;
+  public starGame = false;
+  public hiddenStart = true;
+  public user: User;
+  public draw: Draw;
+  public card :Card[];
+
+  constructor(public http: HttpClient, @Inject('BASE_URL') public baseUrl: string, private _deckService: DeckService, private _userService: UserService, private _localStorage: LocalStorageService, private drawServices: DrawService) {
+    this.user = {
+      id: "00000000-0000-0000-0000-000000000000",
+      username: "",
+      total_money: 0
+    } 
+  }
+  createDeck() {
+    this._deckService.createDeck().subscribe(result => {
+      this._localStorage.saveDeckId(result);
+      this.showForm = false;
+    });
+  }
+  saveUser() {
+    this._userService.saveUser(this.user).subscribe(result => {
+   if (this._localStorage.saveCurrentPlayer(result)) {
+     const Toast = Swal.mixin({
+       toast: true,
+       position: 'top-end',
+       showConfirmButton: false,
+       timer: 3000,
+       timerProgressBar: true,
+       onOpen: (toast) => {
+         toast.addEventListener('mouseenter', Swal.stopTimer)
+           toast.addEventListener('mouseleave', Swal.resumeTimer)
+          }
+        })
+
+        Toast.fire({
+          icon: 'success',
+          title: 'Usuario Agregado correctamente'
+        })
+      }
+      this.createDeck();
+      this.user.username = null;
+      this.user.total_money = null;
+      this.user = this._localStorage.getCurrentPlayer();
+      this.showForm = false;
+      this.showBoard = true;
+      this.showMainForm = false;
+    });
+  }
+  initGame() {
+    this.drawServices.getAllDeck(2).subscribe(result => {
+     // console.log(result);
+    });
+    this.starGame = true;
+    this.hiddenStart = false;
+
+  }
+  dealOption() {
+    this.drawServices.getAllDeck(2).subscribe(
+      result => {
+        this.draw = {
+          id: result['id'],
+          success: result['success'],
+          remaining: result['remaining'],
+          deck_id: result['deck_id'],
+          cards: result['cards'],
+        }
+        this.showItems(result['cards']);
+      });
+    
+  }
+  logAnimation(_event) {
+  }
+  showItems(array) {
+    array.map((i) => {
+      this.items.push(i)
+    });
+  }
+
+  hideItems() {
+    this.items = [];
+  }
+
+  toggle() {
+    this.items.length ? this.hideItems() : this.showItems();
+  }
+}
