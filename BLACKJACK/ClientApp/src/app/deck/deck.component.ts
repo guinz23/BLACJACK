@@ -44,7 +44,7 @@ export class DeckComponent {
   public hiddenStart = true;
   public user: User;
   public draw: Draw;
-  public card :Card[];
+ 
 
   constructor(public http: HttpClient, @Inject('BASE_URL') public baseUrl: string, private _deckService: DeckService, private _userService: UserService, private _localStorage: LocalStorageService, private drawServices: DrawService) {
     this.user = {
@@ -123,6 +123,6 @@ export class DeckComponent {
   }
 
   toggle() {
-    this.items.length ? this.hideItems() : this.showItems();
+    this.items.length ? this.hideItems() : this.showItems(0);
   }
 }
