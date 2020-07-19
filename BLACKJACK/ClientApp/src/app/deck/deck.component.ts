@@ -147,4 +147,7 @@ export class DeckComponent {
     const timer = interval(1000);
     return timer.subscribe(x => this.totalValueCard = this.pointsCardPlayer());
   }
+  mixCards() {
+
+  }
 }

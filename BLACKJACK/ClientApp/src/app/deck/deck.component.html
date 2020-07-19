@@ -28,6 +28,15 @@
             <div class="contenedor">
                 <img src="https://led4art.eu/pic/696888.jpg" width="100%" height="100%" />
                 <div class="texto-encima text-white">{{user.username}}</div>
+
+                <div class="centrado2 row" *ngIf="starGame">
+                    <div class="col-md-2" *ngFor="let item of items">
+                        <div class="card" style="width: 5rem;">
+                            <img class="card-img-top" src="{{item.image}}" alt="Card image cap">
+                        </div>
+                    </div>
+                </div>
+
                 <div class="centrado row" *ngIf="starGame">
                     <div class="col-md-2" *ngFor="let item of items">
                         <div class="card" style="width: 5rem;">
@@ -37,10 +46,10 @@
                 </div>
                 <div id="c" class="row" *ngIf="starGame">
                     <div class="col-md-2">
-                        <button class="btn btn-primary"(click)="dealOption()">Deal</button>
+                        <button class="btn btn-primary" (click)="dealOption()">Deal</button>
                     </div>
                     <div class="col-md-2">
-                        <button class="btn btn-primary"(click)="hitOption()">HIT</button>
+                        <button class="btn btn-primary" (click)="hitOption()">HIT</button>
                     </div>
                     <div class="col-md-2">
                         <button class="btn btn-primary">STAND</button>
@@ -54,6 +63,9 @@
                         <button class="btn btn-warning" (click)="initGame()" *ngIf="hiddenStart"> Comenzar</button>
                     </div>
                     <div class="col-md-6">
+                        <button class="btn-warning">Revolver cartas</button>
+                        <br />
+                        <br />
                         <input type="number" class="form-control" value="{{user.total_money}}" disabled />
                     </div>
                 </div>

@@ -53,13 +53,13 @@ namespace BLACKJACK.Controllers
                     }
                     else
                     {
-                        return BadRequest();
+                        return Json("no hay mas cartas");
                     }
                 }
             }
             else
             {
-                return BadRequest();
+                return Json("id invalido");
             }
             return result;
         }

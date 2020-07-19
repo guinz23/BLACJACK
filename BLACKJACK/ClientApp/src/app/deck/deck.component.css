@@ -12,7 +12,14 @@
   left: 10px;
 }
 
-.centrado{
+.centrado {
+  position: absolute;
+  margin-top: -48%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.centrado2{
   position: absolute;
   top: 50%;
   left: 50%;
@@ -36,6 +43,6 @@ img {
 #h {
   position: absolute;
   width:50%;
-  margin-top:-5%;
+  margin-top:-11%;
   margin-left:50%;
 }
