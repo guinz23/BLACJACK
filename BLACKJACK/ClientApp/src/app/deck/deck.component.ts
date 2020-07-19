@@ -148,6 +148,14 @@ export class DeckComponent {
     return timer.subscribe(x => this.totalValueCard = this.pointsCardPlayer());
   }
   mixCards() {
-
+    this._deckService.shuffle().subscribe(result => {
+      if (result.shuffled == true) {
+        Swal.fire(
+          'Exito!',
+          'Las cartas se revolvieron exitosamente',
+          'success'
+        );
+      }
+    });
   }
 }

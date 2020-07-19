@@ -33,13 +33,13 @@ namespace BLACKJACK.Controllers
         }
         [HttpPut]
         [Route("api/deck/{id}/shuffle")]
-        public async Task<ActionResult<IEnumerable<Deck>>> shuffled()
+        public async Task<ActionResult<IEnumerable<Deck>>> shuffled([FromBody]Deck deck)
         {
             var id = Guid.Parse((string)RouteData.Values["id"]);
             var result =  _context.Decks.SingleOrDefault(b => b.deck_id == id);
             if (result!=null)
             {
-                result.shuffled = true;
+                result.shuffled = deck.shuffled;
                 await _context.SaveChangesAsync();
             }
             else

@@ -16,10 +16,13 @@ export class DeckService {
    }
   shuffle() {
     this.deck = this._localStorage.getDeckId()
-    this.deck={
-      shuffled:true
+    this.deck = {
+      deck_id: this.deck.deck_id,
+      remaining: this.deck.remaining,
+      shuffled: true,
+      success: this.deck.success,
     };
-    return this.httpClient.put<Deck>(this.baseUrl + `api/deck/${this.deck.deck_id}/shuffle`,this.deck, this.headers);
+    return this.httpClient.put<Deck>(this.baseUrl + `api/deck/${this.deck.deck_id}/shuffle`,this.deck, this.headers());
   }
   private headers() {
     return {
