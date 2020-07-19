@@ -13,7 +13,6 @@ export class DrawService {
 
   }
   getAllDeck(count: number) {
-    console.log(count);
     if (count==0) {
       this.deck = this._localStorage.getDeckId();
       return this.httpClient.get<Draw>(this.baseUrl + `api/deck/${this.deck.deck_id}/draw/?count=${count}`);

@@ -10,6 +10,8 @@ import { Local } from 'protractor/built/driverProviders';
 import Swal from 'sweetalert2';
 import { trigger, transition, style, animate, query, stagger } from '@angular/animations';
 import { Draw } from '../interfaces/draw.interface';
+import { interval } from 'rxjs';
+import { take } from 'rxjs/operators';
   
 @Component({
   selector: 'app-deck',
@@ -34,7 +36,7 @@ import { Draw } from '../interfaces/draw.interface';
   styleUrls: ['./deck.component.css']
 })
 export class DeckComponent {
-  items = [];
+ public items = [];
   public decks: Deck[]; 
   public deck: Deck;
   public showForm = false;
@@ -44,14 +46,13 @@ export class DeckComponent {
   public hiddenStart = true;
   public user: User;
   public draw: Draw;
- 
-
+  public totalValueCard: number;
   constructor(public http: HttpClient, @Inject('BASE_URL') public baseUrl: string, private _deckService: DeckService, private _userService: UserService, private _localStorage: LocalStorageService, private drawServices: DrawService) {
     this.user = {
       id: "00000000-0000-0000-0000-000000000000",
       username: "",
       total_money: 0
-    } 
+    }
   }
   createDeck() {
     this._deckService.createDeck().subscribe(result => {
@@ -94,7 +95,7 @@ export class DeckComponent {
     });
     this.starGame = true;
     this.hiddenStart = false;
-
+    this.timer();
   }
   dealOption() {
     this.drawServices.getAllDeck(2).subscribe(
@@ -110,6 +111,16 @@ export class DeckComponent {
       });
     
   }
+  hitOption() {
+    if (this.totalValueCard <21) {
+      this.drawServices.getAllDeck(1).subscribe(
+        result => {
+          this.showItems(result['cards']);
+        });
+    } else {
+      this.hideItems(); 
+    }
+  }
   logAnimation(_event) {
   }
   showItems(array) {
@@ -124,5 +135,16 @@ export class DeckComponent {
 
   toggle() {
     this.items.length ? this.hideItems() : this.showItems(0);
+  }
+  pointsCardPlayer() {
+    let total = 0;
+    for (const prop in this.items) {
+      total += parseInt(this.items[prop].value);
+    }
+    return total;
+  }
+  timer() {
+    const timer = interval(1000);
+    return timer.subscribe(x => this.totalValueCard = this.pointsCardPlayer());
   }
 }

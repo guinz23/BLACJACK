@@ -26,10 +26,15 @@ namespace BLACKJACK.Controllers
             deck.deck_id=Guid.NewGuid();
             deck.success = true;
             deck.remaining = 52;
+            deck.shuffled = false;
             _context.Decks.Add(deck);
             await _context.SaveChangesAsync();
             return CreatedAtAction("GetDeck", new { id = deck.deck_id }, deck);
         }
 
+        public async Task<ActionResult<IEnumerable<Deck>>> shuffled()
+        {
+            return Json("hola");
+        }
     }
 }

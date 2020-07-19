@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using BLACKJACK.Models;
@@ -21,39 +22,108 @@ namespace BLACKJACK.Controllers
         }
         [HttpGet]
         [Route("api/deck/{id}/draw")]
-        public async Task<ActionResult<Draw>> Draw([FromQuery] int count)
+        public async Task<ActionResult<Draw>> Draw([FromQuery] int count,Guid idExits)
         {
+            var id = Guid.Parse((string)RouteData.Values["id"]);
             var deckdb = await _context.Decks.ToListAsync();
-            var id= (string)RouteData.Values["id"];
             var result = new Draw();
-            foreach (var deck in deckdb.Where(e => e.deck_id == Guid.Parse(id)))
+            if (DeckExists(id) == true)
             {
-                result.Id = Guid.NewGuid();
-                result.deck_id = deck.deck_id;
-                result.success = deck.success;
-                result.cards = this.getCountCard(count);
-                result.remaining = deck.remaining;
+                
+                foreach (var deck in deckdb.Where(e => e.deck_id == id))
+                {
+                    if (updateDeack(deck,count))
+                    {
+                        if (deck.shuffled == false)
+                        {
+                            result.Id = Guid.NewGuid();
+                            result.deck_id = deck.deck_id;
+                            result.success = deck.success;
+                            result.cards = this.getCountCard(count, deck.shuffled);
+                            result.remaining = deck.remaining;
+                        }
+                        else
+                        {
+                            result.Id = idExits == Guid.Empty ? Guid.NewGuid() : idExits;
+                            result.deck_id = deck.deck_id;
+                            result.success = deck.success;
+                            result.cards = this.getCountCard(count, deck.shuffled);
+                            result.remaining = deck.remaining;
+                        }
+                    }
+                    else
+                    {
+                        return BadRequest();
+                    }
+                }
+            }
+            else
+            {
+                return BadRequest();
             }
             return result;
         }
 
-        private  Card[] getCountCard(int count)
+        private Card[] getCountCard(int count,bool shuffle)
         {
-             var card = new Card[count];
-              for (var i = 0; i < count; i++)
+            var card = new Card[count];
+            if (shuffle==false)
+            {
+                 for (var i = 0; i < count; i++)
             {
                 Random rnd = new Random();
                 int value = rnd.Next(0, 51);
                 card[i] = drawDeckCard()[value];
-               
+
+              }
             }
+            else
+            {
+                for (int i = 0; i < count; i++)
+                {
+                    Random rnd = new Random();
+                    int j = rnd.Next(i, drawDeckCard().Length);
+                    var temp = drawDeckCard()[j];
+                    drawDeckCard()[j] = drawDeckCard()[i];
+                    drawDeckCard()[i] = temp;
+                    card[i] = temp;
+                }
+            }
+           
             return card;
         }
 
-
-        private Card [] drawDeckCard()
+        private bool DeckExists(Guid id)
         {
-            var card= new Card[] {
+            return _context.Decks.Any(e => e.deck_id == id);
+        }
+
+        public bool updateDeack(Deck _deck,int count)
+        {
+            bool state = false;
+            var result = _context.Decks.SingleOrDefault(b => b.deck_id == _deck.deck_id);
+            if (result != null)
+            {
+                if (result.remaining <= 0)
+                {
+                    state = false;
+                }
+                else
+                {
+                    result.deck_id = _deck.deck_id;
+                    result.success = _deck.success;
+                    result.remaining = _deck.remaining - count;
+                    result.shuffled = _deck.shuffled;
+                    _context.SaveChanges();
+                    state = true;
+                }
+            }
+            return state;
+        }
+
+        private Card[] drawDeckCard()
+        {
+            var card = new Card[] {
                 new Card
                 {
                  Id=Guid.NewGuid(),
@@ -70,7 +140,7 @@ namespace BLACKJACK.Controllers
                   code="AC",
                  suit="CLUBS",
                  value="4"
-  
+
                 },
                  new Card
                 {
@@ -79,7 +149,7 @@ namespace BLACKJACK.Controllers
                   code="2S",
                  suit="SPADES",
                  value="2"
-                
+
                 },
                   new Card
                 {
@@ -162,7 +232,7 @@ namespace BLACKJACK.Controllers
                  code="QH",
                  suit="HEARTS",
                  value="12"
-  
+
                 },
                 new Card
                 {
@@ -276,7 +346,7 @@ namespace BLACKJACK.Controllers
                   code="5S",
                   value="5",
                   suit="SPADES"
-                 
+
 
                 },
                 new Card
