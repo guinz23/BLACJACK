@@ -47,6 +47,9 @@ export class DeckComponent {
   public user: User;
   public draw: Draw;
   public totalValueCard: number;
+  public mazoCroupier: Card[] = [];
+  public mazoPlayer: Card[] = [];
+
   constructor(public http: HttpClient, @Inject('BASE_URL') public baseUrl: string, private _deckService: DeckService, private _userService: UserService, private _localStorage: LocalStorageService, private drawServices: DrawService) {
     this.user = {
       id: "00000000-0000-0000-0000-000000000000",
@@ -96,6 +99,18 @@ export class DeckComponent {
     this.starGame = true;
     this.hiddenStart = false;
     this.timer();
+  }
+
+  dealOption() {
+    this.agregarCartasArray(2, this.mazoPlayer);
+    this.agregarCartasArray(2, this.mazoCroupier);
+  }
+
+  agregarCartasArray(cant: number, array: Card[]) {
+    this.drawServices.getAllDeck(cant).subscribe(
+      result => {
+        result['cards'].map((i) => { array.push(i); });
+      });
   }
   dealOption() {
     this.drawServices.getAllDeck(2).subscribe(
