@@ -37,7 +37,7 @@ import { take } from 'rxjs/operators';
 })
 export class DeckComponent {
   public itemsplayer = [];
-  public itemCrupier = [];
+  public itemsCrupier = [];
   public decks: Deck[]; 
   public deck: Deck;
   public showForm = false;
@@ -47,9 +47,11 @@ export class DeckComponent {
   public hiddenStart = true;
   public user: User;
   public draw: Draw;
-  public totalValueCard: number;
-  //public mazoCroupier: Card[] = [];
-  //public mazoPlayer: Card[] = [];
+  public deal=true;
+  public totalpointsPlayer: number;
+  public totalpointsCrupier: number;
+  public gameswon: number = 0;
+  public lostGames: number = 0;
 
   constructor(public http: HttpClient, @Inject('BASE_URL') public baseUrl: string, private _deckService: DeckService, private _userService: UserService, private _localStorage: LocalStorageService, private drawServices: DrawService) {
     this.user = {
@@ -105,13 +107,6 @@ export class DeckComponent {
   dealOptionPlayer() {
     this.drawServices.getAllDeck(2).subscribe(
       result => {
-        this.draw = {
-          id: result['id'],
-          success: result['success'],
-          remaining: result['remaining'],
-          deck_id: result['deck_id'],
-          cards: result['cards'],
-        }
         this.showItems(result['cards'],'player');
       });
 
@@ -119,13 +114,6 @@ export class DeckComponent {
   dealOptionCrupier() {
     this.drawServices.getAllDeck(2).subscribe(
       result => {
-        this.draw = {
-          id: result['id'],
-          success: result['success'],
-          remaining: result['remaining'],
-          deck_id: result['deck_id'],
-          cards: result['cards'],
-        }
         this.showItems(result['cards'],'crupier');
       });
   }
@@ -133,17 +121,60 @@ export class DeckComponent {
   dealOption() {
     this.dealOptionPlayer();
     this.dealOptionCrupier();
+    this.deal = false;
+
   }
+
   hitOption() {
-    if (this.totalValueCard <21) {
+    if (this.totalpointsPlayer < 21) {
       this.drawServices.getAllDeck(1).subscribe(
         result => {
           this.showItems(result['cards'],'player');
         });
     } else {
-      this.hideItems(); 
+      
     }
   }
+  standOption() {
+   this.pointsCardCrupier();
+    if (this.totalpointsCrupier <= 21 && this.totalpointsPlayer < this.totalpointsCrupier) {
+      Swal.fire({
+        icon: 'error',
+        title: 'You Lost',
+      });
+      this.lostGames = this.lostGames + 1;
+      this.hideItems();
+      this.deal = true;
+    } else if (this.totalpointsPlayer <= 21 && this.totalpointsPlayer > this.totalpointsCrupier) {
+      Swal.fire({
+        icon: 'success',
+        title: 'You Win',
+      });
+      this.gameswon = this.gameswon + 1;
+      this.hideItems();
+      this.deal = true;
+    } else if (this.totalpointsCrupier >= 21 && this.totalpointsPlayer < this.totalpointsCrupier) {
+      Swal.fire({
+        icon: 'success',
+        title: 'You Win',
+      });
+      this.gameswon = this.gameswon + 1;
+      this.hideItems();
+      this.deal = true;
+    } else if (this.totalpointsPlayer >= 21 && this.totalpointsCrupier < this.totalpointsPlayer) {
+      Swal.fire({
+        icon: 'error',
+        title: 'You Lost',
+      });
+      this.lostGames = this.lostGames + 1;
+      this.hideItems();
+      this.deal = true;
+    } else {
+      this.hideItems();
+      this.deal = true;
+    }
+  }
+
   logAnimation(_event) {
   }
   showItems(array, type: string) {
@@ -153,14 +184,14 @@ export class DeckComponent {
       });
     } else if(type =="crupier") {
       array.map((i) => {
-        this.itemCrupier.push(i)
+        this.itemsCrupier.push(i)
       });
     }
   }
 
   hideItems() {
     this.itemsplayer = [];
-    this.itemCrupier = [];
+    this.itemsCrupier = [];
   }
 
   toggle() {
@@ -173,9 +204,19 @@ export class DeckComponent {
     }
     return total;
   }
+
+  pointsCardCrupier() {
+    let total = 0;
+    console.log(this.itemsCrupier);
+    for (const prop in this.itemsCrupier) {
+      total += parseInt(this.itemsCrupier[prop].value);
+    }
+    this.totalpointsCrupier = total;
+    return total;
+  }
   timer() {
     const timer = interval(1000);
-    return timer.subscribe(x => this.totalValueCard = this.pointsCardPlayer());
+    return timer.subscribe(x => this.totalpointsPlayer = this.pointsCardPlayer());
   }
   mixCards() {
     this._deckService.shuffle().subscribe(result => {

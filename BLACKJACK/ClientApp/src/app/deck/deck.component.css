@@ -46,3 +46,21 @@ img {
   margin-top:-11%;
   margin-left:50%;
 }
+#totalpoints {
+  position: absolute;
+  margin-top:-45%;
+  margin-left:10%;
+}
+
+#totalpoints input{
+   margin-bottom:35%;
+}
+#games {
+  position: absolute;
+  margin-top: -60%;
+  margin-left: 88%;
+}
+
+#games input {
+    margin-bottom: 10%;
+  }

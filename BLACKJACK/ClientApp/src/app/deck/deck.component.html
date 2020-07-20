@@ -30,7 +30,7 @@
                 <div class="texto-encima text-white">{{user.username}}</div>
 
                 <div class="centrado2 row" *ngIf="starGame">
-                    <div class="col-md-2" *ngFor="let item of itemCrupier">
+                    <div class="col-md-2" *ngFor="let item of itemsplayer">
                         <div class="card" style="width: 5rem;">
                             <img class="card-img-top" src="{{item.image}}" alt="Card image cap">
                         </div>
@@ -38,7 +38,7 @@
                 </div>
 
                 <div class="centrado row" *ngIf="starGame">
-                    <div class="col-md-2" *ngFor="let item of itemsplayer">
+                    <div class="col-md-2" *ngFor="let item of itemsCrupier ">
                         <div class="card" style="width: 5rem;">
                             <img class="card-img-top" src="{{item.image}}" alt="Card image cap">
                         </div>
@@ -46,13 +46,13 @@
                 </div>
                 <div id="c" class="row" *ngIf="starGame">
                     <div class="col-md-2">
-                        <button class="btn btn-primary" (click)="dealOption()">Deal</button>
+                        <button class="btn btn-primary" (click)="dealOption()" *ngIf="deal">Deal</button>
                     </div>
                     <div class="col-md-2">
                         <button class="btn btn-primary" (click)="hitOption()">HIT</button>
                     </div>
                     <div class="col-md-2">
-                        <button class="btn btn-primary">STAND</button>
+                        <button class="btn btn-primary" (click)="standOption()">STAND</button>
                     </div>
                     <div class="col-md-2">
                         <button class="btn btn-primary">DOUBLE</button>
@@ -63,10 +63,32 @@
                         <button class="btn btn-warning" (click)="initGame()" *ngIf="hiddenStart"> Comenzar</button>
                     </div>
                     <div class="col-md-6">
-                        <button class="btn-warning"(click)="mixCards()">Revolver cartas</button>
+                        <button class="btn-warning" (click)="mixCards()">Revolver cartas</button>
                         <br />
                         <br />
                         <input type="number" class="form-control" value="{{user.total_money}}" disabled />
+                    </div>
+                </div>
+                <div class="row">
+                    <div id="totalpoints" class="col-md-8">
+                        <div class="col-md-4">
+                            <input type="text" class="form-control text-center" [(ngModel)]="totalpointsCrupier" name="totalCrupier" disabled />
+                        </div>
+                        <div class="col-md-4">
+                            <input type="text" class="form-control text-center" [(ngModel)]="totalpointsPlayer" name="totalPlayer" disabled />
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div id="games" class="col-md-6">
+                        <div class="col-md-3">
+                            <label class="text-white"><strong>Partidas Ganadas</strong></label>
+                            <input type="text" class="form-control text-center" [(ngModel)]="gameswon" name="gameswon" disabled />
+                        </div>
+                        <div class="col-md-3">
+                            <label class="text-white"><strong>Partidas Perdidas</strong></label>
+                            <input type="text" class="form-control text-center" [(ngModel)]="lostGames" name="lostGames" disabled />
+                        </div>
                     </div>
                 </div>
             </div>

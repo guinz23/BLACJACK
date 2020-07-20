@@ -394,8 +394,8 @@ namespace BLACKJACK.Controllers
                  Id=Guid.NewGuid(),
                  image="https://deckofcardsapi.com/static/img/JS.png",
                   code="JS",
-                   value= "JACK",
-                   suit = "SPADES"
+                 value= "11",
+                  suit = "SPADES"
                 },
                 new Card
                 {
@@ -434,14 +434,14 @@ namespace BLACKJACK.Controllers
                  Id=Guid.NewGuid(),
                  image="https://deckofcardsapi.com/static/img/KC.png",
                   code="KC",
-                 suit="13",
-                 value="CLUBS"
+                 suit="CLUBS",
+                 value="13"
                 },
                 new Card
                 {
                  Id=Guid.NewGuid(),
-                 image="https://deckofcardsapi.com/static/img/10C.png",
-                  code="10C",
+                 image="https://deckofcardsapi.com/static/img/0C.png",
+                  code="0C",
                  suit="CLUBS",
                  value="10"
                 },
@@ -529,7 +529,7 @@ namespace BLACKJACK.Controllers
                 {
                  Id=Guid.NewGuid(),
                  image="https://deckofcardsapi.com/static/img/0D.png",
-                  code="0D",
+                 code="0D",
                  suit="DIAMONDS",
                  value="10"
                 },
