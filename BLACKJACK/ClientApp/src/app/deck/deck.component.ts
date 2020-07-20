@@ -36,7 +36,8 @@ import { take } from 'rxjs/operators';
   styleUrls: ['./deck.component.css']
 })
 export class DeckComponent {
- public items = [];
+  public itemsplayer = [];
+  public itemCrupier = [];
   public decks: Deck[]; 
   public deck: Deck;
   public showForm = false;
@@ -47,8 +48,8 @@ export class DeckComponent {
   public user: User;
   public draw: Draw;
   public totalValueCard: number;
-  public mazoCroupier: Card[] = [];
-  public mazoPlayer: Card[] = [];
+  //public mazoCroupier: Card[] = [];
+  //public mazoPlayer: Card[] = [];
 
   constructor(public http: HttpClient, @Inject('BASE_URL') public baseUrl: string, private _deckService: DeckService, private _userService: UserService, private _localStorage: LocalStorageService, private drawServices: DrawService) {
     this.user = {
@@ -101,18 +102,7 @@ export class DeckComponent {
     this.timer();
   }
 
-  dealOption() {
-    this.agregarCartasArray(2, this.mazoPlayer);
-    this.agregarCartasArray(2, this.mazoCroupier);
-  }
-
-  agregarCartasArray(cant: number, array: Card[]) {
-    this.drawServices.getAllDeck(cant).subscribe(
-      result => {
-        result['cards'].map((i) => { array.push(i); });
-      });
-  }
-  dealOption() {
+  dealOptionPlayer() {
     this.drawServices.getAllDeck(2).subscribe(
       result => {
         this.draw = {
@@ -122,15 +112,33 @@ export class DeckComponent {
           deck_id: result['deck_id'],
           cards: result['cards'],
         }
-        this.showItems(result['cards']);
+        this.showItems(result['cards'],'player');
       });
-    
+
+  }
+  dealOptionCrupier() {
+    this.drawServices.getAllDeck(2).subscribe(
+      result => {
+        this.draw = {
+          id: result['id'],
+          success: result['success'],
+          remaining: result['remaining'],
+          deck_id: result['deck_id'],
+          cards: result['cards'],
+        }
+        this.showItems(result['cards'],'crupier');
+      });
+  }
+
+  dealOption() {
+    this.dealOptionPlayer();
+    this.dealOptionCrupier();
   }
   hitOption() {
     if (this.totalValueCard <21) {
       this.drawServices.getAllDeck(1).subscribe(
         result => {
-          this.showItems(result['cards']);
+          this.showItems(result['cards'],'player');
         });
     } else {
       this.hideItems(); 
@@ -138,23 +146,30 @@ export class DeckComponent {
   }
   logAnimation(_event) {
   }
-  showItems(array) {
-    array.map((i) => {
-      this.items.push(i)
-    });
+  showItems(array, type: string) {
+    if (type == "player") {
+      array.map((i) => {
+        this.itemsplayer.push(i)
+      });
+    } else if(type =="crupier") {
+      array.map((i) => {
+        this.itemCrupier.push(i)
+      });
+    }
   }
 
   hideItems() {
-    this.items = [];
+    this.itemsplayer = [];
+    this.itemCrupier = [];
   }
 
   toggle() {
-    this.items.length ? this.hideItems() : this.showItems(0);
+    this.itemsplayer.length ? this.hideItems() : this.showItems(0,'player');
   }
   pointsCardPlayer() {
     let total = 0;
-    for (const prop in this.items) {
-      total += parseInt(this.items[prop].value);
+    for (const prop in this.itemsplayer) {
+      total += parseInt(this.itemsplayer[prop].value);
     }
     return total;
   }

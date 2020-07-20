@@ -20,7 +20,7 @@
 
             <button *ngIf="!showForm" class="btn btn-success mb-2" (click)="showForm = true">Agregar Nombre.</button>
         </div>
-        <div [@listAnimation]="items.length"
+        <div [@listAnimation]="itemsplayer.length"
            (@listAnimation.start)="logAnimation($event)"
            (@listAnimation.done)="logAnimation($event)"
          >
@@ -30,7 +30,7 @@
                 <div class="texto-encima text-white">{{user.username}}</div>
 
                 <div class="centrado2 row" *ngIf="starGame">
-                    <div class="col-md-2" *ngFor="let item of items">
+                    <div class="col-md-2" *ngFor="let item of itemCrupier">
                         <div class="card" style="width: 5rem;">
                             <img class="card-img-top" src="{{item.image}}" alt="Card image cap">
                         </div>
@@ -38,7 +38,7 @@
                 </div>
 
                 <div class="centrado row" *ngIf="starGame">
-                    <div class="col-md-2" *ngFor="let item of items">
+                    <div class="col-md-2" *ngFor="let item of itemsplayer">
                         <div class="card" style="width: 5rem;">
                             <img class="card-img-top" src="{{item.image}}" alt="Card image cap">
                         </div>
