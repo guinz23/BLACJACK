@@ -107,7 +107,7 @@ export class DeckComponent {
   dealOptionPlayer() {
     this.drawServices.getAllDeck(2).subscribe(
       result => {
-        if (!result <= 0) {
+        if (result.remaining > 0) {
           this.showItems(result['cards'], 'crupier');
         } else {
           Swal.fire({
@@ -121,7 +121,7 @@ export class DeckComponent {
   dealOptionCrupier() {
     this.drawServices.getAllDeck(2).subscribe(
       result => {
-        if (!result <= 0) {
+        if (result.remaining > 0) {
           this.showItems(result['cards'], 'player');
         } else {
           Swal.fire({
@@ -143,7 +143,7 @@ export class DeckComponent {
     if (this.totalpointsPlayer < 21) {
       this.drawServices.getAllDeck(1).subscribe(
         result => {
-          if (!result <= 0) {
+          if (result.remaining > 0) {
             this.showItems(result['cards'], 'player');
           } else {
             Swal.fire({
@@ -153,7 +153,6 @@ export class DeckComponent {
           }
         });
     } else {
-      
     }
   }
   standOption() {
@@ -201,11 +200,11 @@ export class DeckComponent {
   logAnimation(_event) {
   }
   showItems(array, type: string) {
-    if (type == "player") {
+    if (type === 'player') {
       array.map((i) => {
         this.itemsplayer.push(i)
       });
-    } else if(type =="crupier") {
+    } else if(type === 'crupier') {
       array.map((i) => {
         this.itemsCrupier.push(i)
       });
