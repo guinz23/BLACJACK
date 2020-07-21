@@ -5,14 +5,12 @@ import { UserService } from '../Services/user.services';
 import { LocalStorageService } from '../Services/localstorage.services';
 import { DrawService } from '../Services/draw.service';
 import { Deck } from '../interfaces/deck.interface';
-import { User } from '../interfaces/user.interface'
-import { Local } from 'protractor/built/driverProviders';
+import { User } from '../interfaces/user.interface';
 import Swal from 'sweetalert2';
 import { trigger, transition, style, animate, query, stagger } from '@angular/animations';
 import { Draw } from '../interfaces/draw.interface';
 import { interval } from 'rxjs';
-import { take } from 'rxjs/operators';
-  
+
 @Component({
   selector: 'app-deck',
   templateUrl: './deck.component.html',
@@ -38,7 +36,7 @@ import { take } from 'rxjs/operators';
 export class DeckComponent {
   public itemsplayer = [];
   public itemsCrupier = [];
-  public decks: Deck[]; 
+  public decks: Deck[];
   public deck: Deck;
   public showForm = false;
   public showBoard = false;
@@ -47,18 +45,19 @@ export class DeckComponent {
   public hiddenStart = true;
   public user: User;
   public draw: Draw;
-  public deal=true;
+  public deal = true;
   public totalpointsPlayer: number;
   public totalpointsCrupier: number;
-  public gameswon: number = 0;
-  public lostGames: number = 0;
+  public gameswon = 0;
+  public lostGames = 0;
 
+  // tslint:disable-next-line: max-line-length
   constructor(public http: HttpClient, @Inject('BASE_URL') public baseUrl: string, private _deckService: DeckService, private _userService: UserService, private _localStorage: LocalStorageService, private drawServices: DrawService) {
     this.user = {
-      id: "00000000-0000-0000-0000-000000000000",
-      username: "",
+      id: '00000000-0000-0000-0000-000000000000',
+      username: '',
       total_money: 0
-    }
+    };
   }
   createDeck() {
     this._deckService.createDeck().subscribe(result => {
@@ -76,15 +75,14 @@ export class DeckComponent {
        timer: 3000,
        timerProgressBar: true,
        onOpen: (toast) => {
-         toast.addEventListener('mouseenter', Swal.stopTimer)
-           toast.addEventListener('mouseleave', Swal.resumeTimer)
+         toast.addEventListener('mouseenter', Swal.stopTimer);
+           toast.addEventListener('mouseleave', Swal.resumeTimer);
           }
-        })
-
+        });
         Toast.fire({
           icon: 'success',
           title: 'Usuario Agregado correctamente'
-        })
+        });
       }
       this.createDeck();
       this.user.username = null;
@@ -221,7 +219,9 @@ export class DeckComponent {
   }
   pointsCardPlayer() {
     let total = 0;
+    // tslint:disable-next-line: forin
     for (const prop in this.itemsplayer) {
+      // tslint:disable-next-line: radix
       total += parseInt(this.itemsplayer[prop].value);
     }
     return total;
@@ -230,7 +230,9 @@ export class DeckComponent {
   pointsCardCrupier() {
     let total = 0;
     console.log(this.itemsCrupier);
+    // tslint:disable-next-line: forin
     for (const prop in this.itemsCrupier) {
+      // tslint:disable-next-line: radix
       total += parseInt(this.itemsCrupier[prop].value);
     }
     this.totalpointsCrupier = total;
