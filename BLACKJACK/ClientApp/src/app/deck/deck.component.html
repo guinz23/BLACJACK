@@ -63,8 +63,9 @@
                         <button class="btn btn-warning" (click)="initGame()" *ngIf="hiddenStart"> Comenzar</button>
                     </div>
                     <div class="col-md-6">
-                        <button class="btn-warning" (click)="mixCards()">Revolver cartas</button>
+                        <button class="btn btn-warning" (click)="wager(-25)"><strong>$25</strong></button>
                         <br />
+                        <button class="btn btn-warning" (click)="mixCards()">Revolver cartas</button>
                         <br />
                         <input type="number" class="form-control" value="{{user.total_money}}" disabled />
                     </div>

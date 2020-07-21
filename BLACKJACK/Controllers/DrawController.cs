@@ -53,7 +53,8 @@ namespace BLACKJACK.Controllers
                     }
                     else
                     {
-                        return Json("no hay mas cartas");
+                        
+                        return Json(result.remaining);
                     }
                 }
             }

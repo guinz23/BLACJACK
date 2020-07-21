@@ -107,14 +107,28 @@ export class DeckComponent {
   dealOptionPlayer() {
     this.drawServices.getAllDeck(2).subscribe(
       result => {
-        this.showItems(result['cards'],'player');
+        if (!result <= 0) {
+          this.showItems(result['cards'], 'crupier');
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'El mazo no posee mas cartas',
+          });
+        }
       });
 
   }
   dealOptionCrupier() {
     this.drawServices.getAllDeck(2).subscribe(
       result => {
-        this.showItems(result['cards'],'crupier');
+        if (!result <= 0) {
+          this.showItems(result['cards'], 'player');
+        } else {
+          Swal.fire({
+            icon: 'error',
+            title: 'El mazo no posee mas cartas',
+          });
+        }
       });
   }
 
@@ -129,7 +143,14 @@ export class DeckComponent {
     if (this.totalpointsPlayer < 21) {
       this.drawServices.getAllDeck(1).subscribe(
         result => {
-          this.showItems(result['cards'],'player');
+          if (!result <= 0) {
+            this.showItems(result['cards'], 'player');
+          } else {
+            Swal.fire({
+              icon: 'error',
+              title: 'El mazo no posee mas cartas',
+            });
+          }
         });
     } else {
       
@@ -150,6 +171,7 @@ export class DeckComponent {
         icon: 'success',
         title: 'You Win',
       });
+      this.wager(25);
       this.gameswon = this.gameswon + 1;
       this.hideItems();
       this.deal = true;
@@ -158,6 +180,7 @@ export class DeckComponent {
         icon: 'success',
         title: 'You Win',
       });
+      this.wager(25);
       this.gameswon = this.gameswon + 1;
       this.hideItems();
       this.deal = true;
@@ -228,5 +251,15 @@ export class DeckComponent {
         );
       }
     });
+  }
+  wager(value) {
+    let totalmoney = this._localStorage.getCurrentPlayer().total_money;
+    let wager = value >= 25 ? (totalmoney) + (25*2) : (totalmoney) - 25;
+    this.user = {
+      id: this._localStorage.getCurrentPlayer().id,
+      username: this._localStorage.getCurrentPlayer().username,
+      total_money: wager,
+    }
+   this._localStorage.saveCurrentPlayer(this.user);
   }
 }
